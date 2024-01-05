@@ -12,6 +12,23 @@
   "activationEvents": [],
   "main": "./out/extension.js",
   "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "timedSession",
+          "title": "Timed Session",
+          "icon": "media/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "timedSession": [
+        {
+          "id": "timedSessionView",
+          "name": "Timed Session View"
+        }
+      ]
+    },
     "commands": [
       {
         "command": "timed-session.helloWorld",
