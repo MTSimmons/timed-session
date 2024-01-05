@@ -1,31 +1,43 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
-import { TimedSessionView } from './timedSessionView';
 
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
+let timer: NodeJS.Timeout | undefined;
+let time = 0;
+let timerStatusBarItem: vscode.StatusBarItem;
+
 export function activate(context: vscode.ExtensionContext) {
+  timerStatusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
+  timerStatusBarItem.text = '0:00:00';
+  timerStatusBarItem.show();
+  context.subscriptions.push(timerStatusBarItem);
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "timed-session" is now active!');
+  let startCommand = vscode.commands.registerCommand('timed-session.start', () => {
+    if (timer) {
+      clearInterval(timer);
+      timer = undefined;
+    }
+    timer = setInterval(() => {
+      time++;
+      timerStatusBarItem.text = new Date(time * 1000).toISOString().substr(11, 8);
+    }, 1000);
+  });
 
+  let pauseCommand = vscode.commands.registerCommand('timed-session.pause', () => {
+    if (timer) {
+      clearInterval(timer);
+      timer = undefined;
+    }
+  });
 
-	const timedSessionView = new TimedSessionView();
-	vscode.window.registerTreeDataProvider('timedSessionView', timedSessionView);
-  
+  let clearCommand = vscode.commands.registerCommand('timed-session.clear', () => {
+    if (timer) {
+      clearInterval(timer);
+      timer = undefined;
+    }
+    time = 0;
+    timerStatusBarItem.text = '0:00:00';
+  });
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	let disposable = vscode.commands.registerCommand('timed-session.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from Timed Session!');
-	});
-
-	context.subscriptions.push(disposable);
+  context.subscriptions.push(startCommand, pauseCommand, clearCommand);
 }
 
 // This method is called when your extension is deactivated

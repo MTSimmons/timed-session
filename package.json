@@ -31,8 +31,16 @@
     },
     "commands": [
       {
-        "command": "timed-session.helloWorld",
-        "title": "Hello World"
+        "command": "timed-session.start",
+        "title": "Start Timer"
+      },
+      {
+        "command": "timed-session.pause",
+        "title": "Pause Timer"
+      },
+      {
+        "command": "timed-session.clear",
+        "title": "Clear Timer"
       }
     ]
   },
